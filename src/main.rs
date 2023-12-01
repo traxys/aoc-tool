@@ -1,6 +1,8 @@
 use clap::Parser;
 
 #[derive(Parser, Debug)]
+#[command(name = "cargo")]
+#[command(bin_name = "cargo")]
 struct Args {
     #[clap(subcommand)]
     command: CargoCmd,
