@@ -52,6 +52,7 @@ enum Commands {
         release: bool,
         #[arg(short, long)]
         part: Option<Part>,
+        input: Option<Utf8PathBuf>,
     },
     Fetch,
     Open,
@@ -194,7 +195,11 @@ fn main() -> color_eyre::Result<()> {
                 &args.cookie,
             )?;
         }
-        Commands::Run { release, part } => {
+        Commands::Run {
+            release,
+            part,
+            input,
+        } => {
             let mut cargo = process::Command::new(std::env::var("CARGO")?);
 
             let Some(day) = args.day.or(problems.last_key_value().map(|(k, _)| *k)) else {
@@ -228,7 +233,7 @@ fn main() -> color_eyre::Result<()> {
 
             cargo
                 .args(["--", "--part", part, "--input"])
-                .arg(input_dir.join(day));
+                .arg(input.unwrap_or_else(|| input_dir.join(day)));
         }
     }
 
