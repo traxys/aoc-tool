@@ -66,14 +66,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "aoc-tool"
-version = "0.1.0"
-dependencies = [
- "clap",
- "color-eyre",
-]
-
-[[package]]
 name = "backtrace"
 version = "0.3.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -86,6 +78,14 @@ dependencies = [
  "miniz_oxide",
  "object",
  "rustc-demangle",
+]
+
+[[package]]
+name = "cargo-aoc"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "color-eyre",
 ]
 
 [[package]]

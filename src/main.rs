@@ -3,7 +3,13 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 struct Args {
     #[clap(subcommand)]
-    command: Commands,
+    command: CargoCmd,
+}
+
+#[derive(clap::Subcommand, Debug)]
+enum CargoCmd {
+    #[clap(subcommand)]
+    Aoc(Commands),
 }
 
 #[derive(clap::Subcommand, Debug)]
