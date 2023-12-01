@@ -1,0 +1,8 @@
+[package]
+name = "aoc-tool"
+version = "0.1.0"
+authors = ["traxys <quentin@familleboyer.net>"]
+edition = "2021"
+
+[dependencies]
+color-eyre = "0.6.2"
