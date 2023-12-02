@@ -20,7 +20,7 @@ enum Part {
 #[command(bin_name = "cargo")]
 struct Args {
     #[arg(short, long, global = true, env = "AOC_YEAR")]
-    year: u64,
+    year: Option<u64>,
     #[arg(short, long, global = true, env = "AOC_COOKIE")]
     cookie: Option<String>,
     #[arg(short, long, global = true)]
@@ -132,6 +132,8 @@ fn main() -> color_eyre::Result<()> {
     let args = Args::parse();
     let CargoCmd::Aoc(command) = args.command;
 
+    let year = || args.year.ok_or_else(|| eyre!("no year provided"));
+
     match command {
         Commands::New {
             no_edit: create_only,
@@ -157,11 +159,11 @@ fn main() -> color_eyre::Result<()> {
             std::fs::copy(&template, &day_file)?;
 
             if !no_fetch {
-                fetch(args.year, day, &input_dir, &args.cookie)?;
+                fetch(year()?, day, &input_dir, &args.cookie)?;
             }
 
             if !no_open {
-                open_problem(args.year, day)?;
+                open_problem(year()?, day)?;
             }
 
             if !create_only {
@@ -176,7 +178,7 @@ fn main() -> color_eyre::Result<()> {
                 eyre::bail!("No day, can't open anything");
             };
 
-            open_problem(args.year, day)?;
+            open_problem(year()?, day)?;
         }
         Commands::Edit => {
             let Some(day) = args.day.or(problems.last_key_value().map(|(k, _)| *k)) else {
@@ -194,7 +196,7 @@ fn main() -> color_eyre::Result<()> {
         }
         Commands::Fetch => {
             fetch(
-                args.year,
+                year()?,
                 args.day
                     .unwrap_or(problems.last_key_value().map(|(k, _)| *k).unwrap_or(1)),
                 &input_dir,
