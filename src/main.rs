@@ -57,6 +57,11 @@ enum Commands {
     Fetch,
     Open,
     Edit,
+    Bench {
+        #[arg(short, long)]
+        part: Part,
+        input: Option<Utf8PathBuf>,
+    },
 }
 
 fn fetch(
@@ -120,6 +125,7 @@ fn main() -> color_eyre::Result<()> {
         })
         .collect::<Result<_, _>>()?;
     let workspace_root = &metadata.workspace_root;
+    let target_dir = &metadata.target_directory;
 
     let input_dir = workspace_root.join("inputs");
 
@@ -194,6 +200,33 @@ fn main() -> color_eyre::Result<()> {
                 &input_dir,
                 &args.cookie,
             )?;
+        }
+        Commands::Bench { part, input } => {
+            let mut cargo = process::Command::new(std::env::var("CARGO")?);
+
+            let Some(day) = args.day.or(problems.last_key_value().map(|(k, _)| *k)) else {
+                eyre::bail!("No day found");
+            };
+
+            let part = match part {
+                Part::One => "1",
+                Part::Two => "2",
+            };
+
+            let day = format!("day{day}");
+
+            cargo.args(["build", "--release", "--bin", &day]).status()?;
+
+            if let Some(code) = process::Command::new("hyperfine")
+                .arg(&format!(
+                    "{target_dir}/{day} --part {part} --input {}",
+                    input.unwrap_or_else(|| input_dir.join(&day))
+                ))
+                .status()?
+                .code()
+            {
+                std::process::exit(code)
+            }
         }
         Commands::Run {
             release,
