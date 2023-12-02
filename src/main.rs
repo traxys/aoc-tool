@@ -19,7 +19,7 @@ enum Part {
 #[command(name = "cargo")]
 #[command(bin_name = "cargo")]
 struct Args {
-    #[arg(short, long, global = true, default_value_t = 2023)]
+    #[arg(short, long, global = true, env = "AOC_YEAR")]
     year: u64,
     #[arg(short, long, global = true, env = "AOC_COOKIE")]
     cookie: Option<String>,
