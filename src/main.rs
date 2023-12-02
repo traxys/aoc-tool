@@ -234,6 +234,8 @@ fn main() -> color_eyre::Result<()> {
             cargo
                 .args(["--", "--part", part, "--input"])
                 .arg(input.unwrap_or_else(|| input_dir.join(day)));
+
+            cargo.status()?;
         }
     }
 
