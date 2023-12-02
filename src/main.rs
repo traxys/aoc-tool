@@ -219,7 +219,7 @@ fn main() -> color_eyre::Result<()> {
 
             if let Some(code) = process::Command::new("hyperfine")
                 .arg(&format!(
-                    "{target_dir}/{day} --part {part} --input {}",
+                    "{target_dir}/release/{day} --part {part} --input {}",
                     input.unwrap_or_else(|| input_dir.join(&day))
                 ))
                 .status()?
