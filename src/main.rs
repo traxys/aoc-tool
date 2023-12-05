@@ -60,7 +60,9 @@ enum Commands {
     Bench {
         #[arg(short, long)]
         part: Part,
+        #[arg(short, long)]
         input: Option<Utf8PathBuf>,
+        hyperfine_args: Vec<String>,
     },
 }
 
@@ -203,7 +205,11 @@ fn main() -> color_eyre::Result<()> {
                 &args.cookie,
             )?;
         }
-        Commands::Bench { part, input } => {
+        Commands::Bench {
+            part,
+            input,
+            hyperfine_args,
+        } => {
             let mut cargo = process::Command::new(std::env::var("CARGO")?);
 
             let Some(day) = args.day.or(problems.last_key_value().map(|(k, _)| *k)) else {
@@ -224,6 +230,7 @@ fn main() -> color_eyre::Result<()> {
                     "{target_dir}/release/{day} --part {part} --input {}",
                     input.unwrap_or_else(|| input_dir.join(&day))
                 ))
+                .args(hyperfine_args)
                 .status()?
                 .code()
             {
